@@ -11,7 +11,7 @@ RUN mvn package
 FROM openjdk:8-jdk-alpine 
 
 WORKDIR /app 
-COPY --from=MAVEN_BUILD /target/demo-0.0.1-SNAPSHOT.jar 
+COPY --from=MAVEN_BUILD /target/demo-0.0.1-SNAPSHOT.jar /app/
 ENTRYPOINT ["java", "-jar", "demo-0.0.1-SNAPSHOT.jar"]
 
 
