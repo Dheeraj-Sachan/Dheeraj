@@ -1,13 +1,17 @@
-# select parent image
-FROM maven:3.6.3-jdk-8
+FROM maven:3.5.2-jdk-8-alpine AS MAVEN_BUILD 
 
-# copy the source tree and the pom.xml to our new container
-COPY ./ ./
+COPY pom.xml /build/ 
 
-# package our application code
-RUN mvn clean package
+COPY src /build/src/ 
 
-# set the startup command to execute the jar
-CMD ["java", "-jar", "target/demo-0.0.1-SNAPSHOT.jar"]
+WORKDIR /build/ 
+
+RUN mvn package 
+
+FROM openjdk:8-jdk-alpine 
+
+WORKDIR /app 
+COPY --from=MAVEN_BUILD /build/target/demo-0.0.1-SNAPSHOT.jar /app/ 
+ENTRYPOINT ["java", "-jar", "demo-0.0.1-SNAPSHOT.jar"]
 
 
